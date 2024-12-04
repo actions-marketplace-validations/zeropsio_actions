@@ -5,8 +5,8 @@ A GitHub Action for streamlining Zerops deployment workflows in your projects.
 ## 🧐 Usage
 
 To implement the Zerops deployment workflow, add the following GitHub Actions
-configuration to `.github/workflows/deploy.yml` and modify it to fit your use
-case:
+configuration to `.github/workflows/deploy.yml` and modify it as per your
+needs:
 
 ```yaml
 name: Deploy to Zerops
