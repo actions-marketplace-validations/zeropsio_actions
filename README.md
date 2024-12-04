@@ -31,7 +31,9 @@ jobs:
           service-id: EjmDVbL0QMuemLJ2hSO6zw # Replace it with your own Service ID
 ```
 
-See a live example in a [repository](https://github.com/nermalcat69/Site/blob/main/.github/workflows/deploy.yml) which uses this action.
+See a live example in a
+[repository](https://github.com/nermalcat69/Site/blob/main/.github/workflows/deploy.yml)
+which uses this action.
 
 ## 🔑 Zerops Token Generation
 

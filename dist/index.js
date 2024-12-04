@@ -61595,12 +61595,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const cache = __importStar(__nccwpck_require__(7799));
+const HELP_MESSAGE = '💡 Need help? Join our Discord community at https://discord.gg/zeropsio';
 async function run() {
     try {
         const serviceId = core.getInput('service-id', { required: true });
         const accessToken = core.getInput('access-token', { required: true });
         if (!accessToken || accessToken.trim() === '') {
-            throw new Error('Zerops access token is empty or not provided. Make sure you have set the access-token input in your workflow file or repository secrets.');
+            throw new Error(`Zerops access token is empty or not provided. Make sure you have set the access-token input in your workflow file or repository secrets.\n${HELP_MESSAGE}`);
         }
         const zcliPath = '/usr/local/bin/zcli';
         const zcliCacheKey = 'zcli-linux-amd64-cache';
@@ -61611,13 +61612,18 @@ async function run() {
         else {
             core.info('😲 Zerops CLI cache miss');
             core.info('⚡ Installing Zerops CLI...');
-            await exec.exec('curl', [
-                '-L',
-                'https://github.com/zeropsio/zcli/releases/latest/download/zcli-linux-amd64',
-                '-o',
-                zcliPath
-            ]);
-            await exec.exec('chmod', ['+x', zcliPath]);
+            try {
+                await exec.exec('curl', [
+                    '-L',
+                    'https://github.com/zeropsio/zcli/releases/latest/download/zcli-linux-amd64',
+                    '-o',
+                    zcliPath
+                ]);
+                await exec.exec('chmod', ['+x', zcliPath]);
+            }
+            catch (installError) {
+                throw new Error(`😵‍💫 Failed to download or install Zerops CLI: ${installError instanceof Error ? installError.message : 'Unknown error'}\n${HELP_MESSAGE}`);
+            }
             await cache.saveCache([zcliPath], zcliCacheKey);
         }
         core.exportVariable('ZEROPS_TOKEN', accessToken);
@@ -61626,7 +61632,7 @@ async function run() {
             await exec.exec(`zcli login ${accessToken}`);
         }
         catch (loginError) {
-            throw new Error('😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.');
+            throw new Error(`😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.\n${HELP_MESSAGE}`);
         }
         const deployCommand = `zcli push --serviceId ${serviceId}`;
         core.info(`⚡ Executing: ${deployCommand}`);
@@ -61643,7 +61649,7 @@ async function run() {
             }
         }
         else {
-            core.setFailed('⚠️ Action failed with an unknown error.');
+            core.setFailed(`⚠️ Action failed with an unknown error.\n${HELP_MESSAGE}`);
         }
     }
 }

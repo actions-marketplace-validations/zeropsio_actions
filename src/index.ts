@@ -2,7 +2,8 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as cache from '@actions/cache'
 
-const HELP_MESSAGE = '💡 Need help? Join our Discord community at https://discord.gg/zeropsio'
+const HELP_MESSAGE =
+  '💡 Need help? Join our Discord community at https://discord.gg/zeropsio'
 
 async function run() {
   try {
