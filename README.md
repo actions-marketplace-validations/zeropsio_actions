@@ -31,12 +31,9 @@ jobs:
           service-id: EjmDVbL0QMuemLJ2hSO6zw # Replace it with your own Service ID
 ```
 
-See a live example in the
-[Zerops GitHub Action repository](https://github.com/nermalcat69/Site/blob/main/.github/workflows/deploy.yml).
+See a live example in a [repository](https://github.com/nermalcat69/Site/blob/main/.github/workflows/deploy.yml) which uses this action.
 
-## ⚙️ Environment Setup
-
-### 🔑 Zerops Token Generation
+## 🔑 Zerops Token Generation
 
 A personal access token is required to authenticate the Zerops CLI. This token
 has admin privileges, so handle it with care.
@@ -46,7 +43,7 @@ has admin privileges, so handle it with care.
    in the Zerops application.
 2. Generate a new access token.
 
-### 🔍 Retrieving the Service ID
+## 🔍 Retrieving the Service ID
 
 The service ID is used to identify your Zerops service.
 
@@ -55,7 +52,7 @@ The service ID is used to identify your Zerops service.
 2. The service ID is the alphanumeric string in the URL (e.g.,
    `EjmDVbL0QMuemLJ2hSO6zw`).
 
-### 🔒 Configuring Repository Secrets
+## 🔒 Configuring Repository Secrets
 
 Store the Zerops token and service ID as secrets in your GitHub repository:
 

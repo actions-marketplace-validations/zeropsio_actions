@@ -2,6 +2,8 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as cache from '@actions/cache'
 
+const HELP_MESSAGE = '💡 Need help? Join our Discord community at https://discord.gg/zeropsio'
+
 async function run() {
   try {
     const serviceId = core.getInput('service-id', { required: true })
@@ -9,7 +11,7 @@ async function run() {
 
     if (!accessToken || accessToken.trim() === '') {
       throw new Error(
-        'Zerops access token is empty or not provided. Make sure you have set the access-token input in your workflow file or repository secrets.'
+        `Zerops access token is empty or not provided. Make sure you have set the access-token input in your workflow file or repository secrets.\n${HELP_MESSAGE}`
       )
     }
 
@@ -23,13 +25,19 @@ async function run() {
       core.info('😲 Zerops CLI cache miss')
 
       core.info('⚡ Installing Zerops CLI...')
-      await exec.exec('curl', [
-        '-L',
-        'https://github.com/zeropsio/zcli/releases/latest/download/zcli-linux-amd64',
-        '-o',
-        zcliPath
-      ])
-      await exec.exec('chmod', ['+x', zcliPath])
+      try {
+        await exec.exec('curl', [
+          '-L',
+          'https://github.com/zeropsio/zcli/releases/latest/download/zcli-linux-amd64',
+          '-o',
+          zcliPath
+        ])
+        await exec.exec('chmod', ['+x', zcliPath])
+      } catch (installError) {
+        throw new Error(
+          `😵‍💫 Failed to download or install Zerops CLI: ${installError instanceof Error ? installError.message : 'Unknown error'}\n${HELP_MESSAGE}`
+        )
+      }
 
       await cache.saveCache([zcliPath], zcliCacheKey)
     }
@@ -41,7 +49,7 @@ async function run() {
       await exec.exec(`zcli login ${accessToken}`)
     } catch (loginError) {
       throw new Error(
-        '😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.'
+        `😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.\n${HELP_MESSAGE}`
       )
     }
 
@@ -58,7 +66,7 @@ async function run() {
         core.setFailed(`⚠️ Action failed with error: ${error.message}`)
       }
     } else {
-      core.setFailed('⚠️ Action failed with an unknown error.')
+      core.setFailed(`⚠️ Action failed with an unknown error.\n${HELP_MESSAGE}`)
     }
   }
 }
