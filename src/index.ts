@@ -7,16 +7,22 @@ async function run() {
     const serviceId = core.getInput('service-id', { required: true })
     const accessToken = core.getInput('access-token', { required: true })
 
+    if (!accessToken || accessToken.trim() === '') {
+      throw new Error(
+        'Zerops access token is empty or not provided. Make sure you have set the access-token input in your workflow file or repository secrets.'
+      )
+    }
+
     const zcliPath = '/usr/local/bin/zcli'
     const zcliCacheKey = 'zcli-linux-amd64-cache'
 
     const cacheKey = await cache.restoreCache([zcliPath], zcliCacheKey)
     if (cacheKey) {
-      core.info('Zerops CLI cache hit')
+      core.info('💡 Zerops CLI cache hit')
     } else {
-      core.info('Zerops CLI cache miss')
+      core.info('😲 Zerops CLI cache miss')
 
-      core.info('Installing Zerops CLI...')
+      core.info('⚡ Installing Zerops CLI...')
       await exec.exec('curl', [
         '-L',
         'https://github.com/zeropsio/zcli/releases/latest/download/zcli-linux-amd64',
@@ -30,19 +36,29 @@ async function run() {
 
     core.exportVariable('ZEROPS_TOKEN', accessToken)
 
-    core.info('Logging in with Zerops token...')
-    await exec.exec(`zcli login ${accessToken}`)
+    core.info('⚡ Logging in with Zerops token...')
+    try {
+      await exec.exec(`zcli login ${accessToken}`)
+    } catch (loginError) {
+      throw new Error(
+        '😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.'
+      )
+    }
 
     const deployCommand = `zcli push --serviceId ${serviceId}`
-    core.info(`Executing: ${deployCommand}`)
+    core.info(`⚡ Executing: ${deployCommand}`)
     await exec.exec(deployCommand)
 
-    core.info('Deployment completed successfully.')
+    core.info('✅ Deployment completed successfully.')
   } catch (error) {
     if (error instanceof Error) {
-      core.setFailed(`Action failed with error: ${error.message}`)
+      if (error.message.includes('access token')) {
+        core.setFailed(`⚠️ Authentication Error: ${error.message}`)
+      } else {
+        core.setFailed(`⚠️ Action failed with error: ${error.message}`)
+      }
     } else {
-      core.setFailed('Action failed with an unknown error.')
+      core.setFailed('⚠️ Action failed with an unknown error.')
     }
   }
 }

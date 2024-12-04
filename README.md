@@ -2,17 +2,18 @@
 
 A GitHub Action for streamlining Zerops deployment workflows in your projects.
 
-## Usage
+## 🧐 Usage
 
 To implement the Zerops deployment workflow, add the following GitHub Actions
 configuration to `.github/workflows/deploy.yml` and modify it to fit your use
 case:
 
 ```yaml
-name: Deploy with Zerops
+name: Deploy to Zerops
 
 on:
   push:
+    # Make sure to set this to the branch you want to deploy from
     branches:
       - main
 
@@ -27,13 +28,15 @@ jobs:
       - name: Deploy with Zerops
         uses: zeropsio/actions@main
         with:
-          access-token: ${{ secrets.ZEROPS_TOKEN }}
-          service-id: EjmDVbL0QMuemLJ2hSO6zw # Replace it wit your own Service ID
+          access-token: ${{ secrets.ZEROPS_TOKEN }} # Make sure to set this in your repository secrets
+          service-id: EjmDVbL0QMuemLJ2hSO6zw # Replace it with your own Service ID
 ```
 
-## Environment Setup
+See a live example in the [Zerops GitHub Action repository](https://github.com/nermalcat69/Site/blob/main/.github/workflows/deploy.yml).
 
-### Zerops Token Generation
+## ⚙️ Environment Setup
+
+### 🔑 Zerops Token Generation
 
 A personal access token is required to authenticate the Zerops CLI. This token
 has admin privileges, so handle it with care.
@@ -43,7 +46,7 @@ has admin privileges, so handle it with care.
    in the Zerops application.
 2. Generate a new access token.
 
-### Retrieving the Service ID
+### 🔍 Retrieving the Service ID
 
 The service ID is used to identify your Zerops service.
 
@@ -52,7 +55,7 @@ The service ID is used to identify your Zerops service.
 2. The service ID is the alphanumeric string in the URL (e.g.,
    `EjmDVbL0QMuemLJ2hSO6zw`).
 
-### Configuring Repository Secrets
+### 🔒 Configuring Repository Secrets
 
 Store the Zerops token and service ID as secrets in your GitHub repository:
 
