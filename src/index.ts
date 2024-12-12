@@ -54,7 +54,7 @@ async function run() {
       )
     }
 
-    const deployCommand = `zcli push ${serviceId}`
+    const deployCommand = `zcli push --serviceId ${serviceId}`
     core.info(`⚡ Executing: ${deployCommand}`)
     await exec.exec(deployCommand)
 
