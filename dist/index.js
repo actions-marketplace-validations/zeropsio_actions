@@ -61634,7 +61634,7 @@ async function run() {
         catch (loginError) {
             throw new Error(`😵‍💫 Failed to authenticate with Zerops. 🧐 Please check if your access token is valid and properly configured in your repository secrets.\n${HELP_MESSAGE}`);
         }
-        const deployCommand = `zcli push --serviceId ${serviceId}`;
+        const deployCommand = `zcli push ${serviceId}`;
         core.info(`⚡ Executing: ${deployCommand}`);
         await exec.exec(deployCommand);
         core.info('✅ Deployment completed successfully.');
